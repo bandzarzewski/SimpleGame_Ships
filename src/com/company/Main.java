@@ -1,9 +1,5 @@
 package com.company;
 
-enum State {
-    EMPTY, HIT, MISS, SUNK
-}
-
 public class Main {
 
     public static void main(String[] args) {
