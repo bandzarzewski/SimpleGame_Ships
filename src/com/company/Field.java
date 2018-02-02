@@ -11,4 +11,23 @@ public class Field {
         this.x = x;
         this.y = y;
     }
+
+    public char stateToChar() {
+        char value;
+        switch (state) {
+            case EMPTY:
+                value = ' ';
+                break;
+            case HIT:
+                value = 'O';
+                break;
+            default:
+                value = '*';
+        }
+        return value;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
 }
