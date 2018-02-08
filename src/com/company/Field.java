@@ -1,7 +1,5 @@
 package com.company;
 
-import java.lang.ref.PhantomReference;
-
 public class Field {
 
     private State state;
@@ -9,7 +7,7 @@ public class Field {
     private final int y;
     private Ship ship;
 
-    public Field(State state, int x, int y) {
+    public Field(int x, int y,State state) {
         this.state = state;
         this.x = x;
         this.y = y;
@@ -17,6 +15,10 @@ public class Field {
 
     public void setShip(Ship ship) {
         this.ship = ship;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
     public char stateToChar() {
@@ -32,9 +34,5 @@ public class Field {
                 value = '*';
         }
         return value;
-    }
-
-    public void setState(State state) {
-        this.state = state;
     }
 }

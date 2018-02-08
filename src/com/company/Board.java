@@ -6,17 +6,19 @@ public class Board {
     public Board() {
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 10; x++) {
-                fields[y][x] = new Field(State.EMPTY,x,y);
-                            }
+                fields[y][x] = new Field(x, y, State.EMPTY);
+            }
         }
     }
-    public   void fillBoard() {
+
+    public void fillBoard() {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 fields[i][j].setState(getRandomShip(Math.random()));
             }
         }
     }
+
     private static State getRandomShip(double random) {
         if (Math.random() < 0.2) {
             return State.HIT;
@@ -24,13 +26,15 @@ public class Board {
             return State.MISS;
         }
     }
-   private static void printLetters() {
+
+    private static void printLetters() {
         System.out.print("  ");
         for (int i = 0; i < 10; i++) {
             System.out.print((char) ('A' + i));
         }
         System.out.print('\n');
     }
+
     public void printBoard() {
         printLetters();
         for (int i = 0; i < 10; i++) {
@@ -48,4 +52,10 @@ public class Board {
     }
 
 
+    public boolean addShip(int x, int y, Submarine submarine) {
+        if (x < 0 || x >= 10 || y < 0 || y >= 10) {
+            return false;
+        }
+        return true;
+    }
 }

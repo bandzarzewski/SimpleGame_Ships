@@ -1,7 +1,5 @@
 package com.company;
 
-import java.util.PrimitiveIterator;
-
 public abstract class WarShip implements Ship {
 
     enum Orientation {
@@ -11,6 +9,7 @@ public abstract class WarShip implements Ship {
     private Orientation orientation;
     private int hits;
     private Field[] occupied;
+
 
     public WarShip() {
         occupied = new Field[getDecksCount()];
@@ -36,12 +35,11 @@ public abstract class WarShip implements Ship {
                 occupied[i].setState(State.SUNK);
             }
         }
-
     }
-
 }
 
 class Submarine extends WarShip {
+
 
     @Override
     public int getDecksCount() {
