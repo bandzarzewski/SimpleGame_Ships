@@ -5,24 +5,27 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class BoardTest {
+
+    Board board = new Board();
+
     @Test
     public void shouldAddSubmarine() throws Exception {
-        Board board = new Board();
-        boolean result = board.addShip(0,0,new Submarine());
-        assertTrue(result);
+        board.addShip(0,0,new Submarine());
+        assertEquals(1,board.getShipsCount());
     }
 
-    @Test
+    //assert
+    @Test(expected = IllegalMoveException.class)
     public void shouldFailToAddOutsideX() throws Exception{
-        Board board = new Board();
-        boolean result = board.addShip(-1,0,new Submarine());
-        assertFalse(result);
+//        try {
+            board.addShip(-1, 0, new Submarine());
+//            fail(); // assertFalse(result);
+//        } catch (IllegalMoveException ex){}
+
     }
 
-    @Test
+    @Test(expected = IllegalMoveException.class)
     public void shouldFailToAddOutsideY() throws Exception{
-        Board board = new Board();
-        boolean result = board.addShip(0,9,new Submarine());
-        assertTrue(result);
+        board.addShip(0,9,new Submarine());
     }
 }
