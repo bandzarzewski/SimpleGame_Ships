@@ -35,4 +35,8 @@ public class Field {
         }
         return value;
     }
+
+    public State getState() {
+        return state;
+    }
 }
