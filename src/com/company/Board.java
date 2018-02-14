@@ -5,7 +5,8 @@ public class Board {
     private Field[][] fields = new Field[10][10];
     private static final int BOARD_SIZE = 10;
     private int shipsCount;
-    private int numberOfShipsByDeck[] = new int[SHIP_COUNT_TYPES];// będziemy zapisywać do tablicy ilość statków na planszy
+    private int numberOfShipsByDeck[] = new int[SHIP_COUNT_TYPES];
+    // będziemy zapisywać do tablicy ilość statków na planszy
 
     public Board() {
         for (int y = 0; y < BOARD_SIZE; y++) {
@@ -59,18 +60,60 @@ public class Board {
     public void addShip(int x, int y, Ship ship) throws IllegalMoveException {
 
 
-        if (numberOfShipsByDeck[ship.getDecksCount() - 1] == getTotalCountOfShips(ship.getDecksCount())) {
+        int count = ship.getDecksCount();
+        if (numberOfShipsByDeck[count - 1] == getTotalCountOfShips(count)) {
             throw new IllegalMoveException("you have all submarine set! ");
         }
 
-        if (x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE) {
+        if (isOutside(x, y)) {
             throw new IllegalMoveException("Ship set outside board! ");
         }
-        ship.setOnField(fields[y][x], 0);
+
+        Field[] field = new Field[count];
+        int xToSet = x;
+        int yToSet = y;
+
+        for (int i = 0; i < count; i++) {
+            if (ship.getOrientation() == WarShip.Orientation.HORIZONTAL) {
+                xToSet = x + i;
+            } else {
+                yToSet = y + i;
+            }
+            if (isOutside(xToSet, yToSet)) {
+                throw new IllegalMoveException("Ship set outside board! ");
+            }
+            field[i] = fields[yToSet][xToSet];
+            if (isFieldOccupied(field[i])) {
+                throw new IllegalMoveException("Field is occupide! ");
+            }
+        }
+        for (int i = 0; i < count; i++) {
+            ship.setOnField(field[i], i);
+        }
+
 
         shipsCount++;
-        numberOfShipsByDeck[ship.getDecksCount() - 1]++; // odejmujemy 1 aby mieć po 0 ele.tab liczbe 1-masztowców
+        numberOfShipsByDeck[count - 1]++; // odejmujemy 1 aby mieć po 0 ele.tab liczbe 1-masztowców
 
+    }
+
+    private boolean isFieldOccupied(Field field) {
+        for (int y = field.getY() - 1; y <= field.getY() + 1; y++) {
+            for (int x = field.getX() - 1; x <= field.getX() + 1; x++) {
+
+                if (isOutside(x, y)) {
+                    continue; // ,== if(!isOutside(x,y))
+                }
+                if (fields[y][x].getState() != State.EMPTY) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isOutside(int x, int y) {
+        return x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE;
     }
 
     private int getTotalCountOfShips(int decksCount) {
@@ -83,5 +126,15 @@ public class Board {
 
     public Field getField(int x, int y) {
         return fields[y][x];
+    }
+
+    public void shoot(int x, int y) {
+        Field field = getField(x, y);
+        if (field.getState() == State.EMPTY) {
+            field.setState(State.MISS);
+        } else if (field.getState() == State.SHIP) {
+            field.setState(State.HIT);
+            field.getShip().hit();
+        }
     }
 }

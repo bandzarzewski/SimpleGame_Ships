@@ -39,4 +39,16 @@ public class Field {
     public State getState() {
         return state;
     }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public Ship getShip() {
+        return ship;
+    }
 }
