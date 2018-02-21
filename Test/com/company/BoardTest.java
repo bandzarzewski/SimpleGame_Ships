@@ -74,9 +74,9 @@ public class BoardTest {
     }
 
     @Test
-    public void shouldMarkMiss() {
-    board.shoot(0,0);
-    assertEquals(State.MISS,board.getField(0,0).getState());
+    public void shouldMarkMiss() throws Exception {
+    board.shoot(2,2);
+    assertEquals(State.MISS,board.getField(2,2).getState());
     }
 
     @Test
@@ -93,5 +93,26 @@ public class BoardTest {
     board.shoot(1,0);
     assertEquals(State.SUNK, board.getField(0,0).getState());
     assertEquals(State.SUNK, board.getField(1,0).getState());
+    }
+
+    @Test
+    public void shouldDecraseShipsOnBoard() throws Exception{
+        board.addShip(0,0,new Submarine());
+        board.shoot(0,0);
+        assertEquals(0,board.getShipsCount());
+    }
+
+
+    @Test(expected = IllegalMoveException.class)
+    public void shouldNotBeAbleToShootTwice() throws Exception {
+        board.shoot(0,0);
+        board.shoot(0,0);
+
+    }
+
+    @Test
+    public void shouldHaveAllShipsGenerated() throws Exception {
+        board.fillBoard();
+        assertEquals(10,board.getShipsCount());
     }
 }

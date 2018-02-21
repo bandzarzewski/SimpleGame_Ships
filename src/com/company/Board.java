@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.Random;
+
 public class Board {
     public static final int SHIP_COUNT_TYPES = 4;
     private Field[][] fields = new Field[10][10];
@@ -17,10 +19,42 @@ public class Board {
     }
 
     public void fillBoard() {
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                fields[i][j].setState(getRandomShip(Math.random()));
+        Random random = new Random();
+        for (int decks = 1; decks <= SHIP_COUNT_TYPES; decks++) {
+            for (int i = 0; i < getTotalCountOfShips(decks); i++) {
+
+                boolean tryAgain;
+                do {
+                    int x = random.nextInt(BOARD_SIZE);
+                    int y = random.nextInt(BOARD_SIZE);
+                    WarShip.Orientation orientation = random.nextBoolean() ? WarShip.Orientation.HORIZONTAL
+                            : WarShip.Orientation.VERTICAL;
+
+                    Ship ship = getShip(decks, orientation);
+
+                    try {
+                        addShip(x, y, ship);
+                        tryAgain = false;
+                    } catch (IllegalMoveException e) {
+                        tryAgain = true;
+                    }
+                } while (tryAgain);
             }
+        }
+    }
+
+    private Ship getShip(int decks, WarShip.Orientation orientation) {
+        switch (decks) {
+            case 1:
+                return new Submarine();
+            case 2:
+                return new Destoyer(orientation);
+            case 3:
+                return new Cruiser(orientation);
+            case 4:
+                return new Battleship(orientation);
+            default:
+                throw new IllegalArgumentException(String.format("Unknown ship with %d decks", decks));
         }
     }
 
@@ -128,13 +162,20 @@ public class Board {
         return fields[y][x];
     }
 
-    public void shoot(int x, int y) {
+    public void shoot(int x, int y) throws IllegalMoveException {
         Field field = getField(x, y);
+        if (field.getState() == State.MISS || field.getState() == State.HIT || field.getState() == State.SUNK) {
+            throw new IllegalMoveException("you have alreadt shot here");
+        }
+
         if (field.getState() == State.EMPTY) {
             field.setState(State.MISS);
         } else if (field.getState() == State.SHIP) {
             field.setState(State.HIT);
             field.getShip().hit();
+            if (field.getShip().isSunk()) {
+                shipsCount--;
+            }
         }
     }
 }
