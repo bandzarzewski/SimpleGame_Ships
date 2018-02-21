@@ -7,7 +7,7 @@ public class Field {
     private final int y;
     private Ship ship;
 
-    public Field(int x, int y,State state) {
+    public Field(int x, int y, State state) {
         this.state = state;
         this.x = x;
         this.y = y;
@@ -24,14 +24,22 @@ public class Field {
     public char stateToChar() {
         char value;
         switch (state) {
+            case SHIP:
             case EMPTY:
                 value = ' ';
                 break;
             case HIT:
                 value = 'O';
                 break;
+            case SUNK:
+                value = 'X';
+                break;
+            case MISS:
+                value = '!';
+                break;
+
             default:
-                value = '*';
+                value = '?';
         }
         return value;
     }
